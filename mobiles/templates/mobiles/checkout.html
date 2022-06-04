@@ -1,0 +1,102 @@
+{% extends 'mobiles/base.html' %}
+{% load static %}
+{% block title %}Order Summary{% endblock title %}
+{% block main-content %}
+<div class="container my-3 pt-5">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card shadow">
+        <div class="card-header">
+          <h3 class="mb-0  slidebar-title">My Orders Summary
+            <a href="{% url 'show-cart' %}" class="btn float-end text-white" style="background-color:rgb(6, 6, 39);"><i
+                class="fa fa-reply"></i> Back</a>
+          </h3>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6 col-12">
+              <h4 class="slidebar-title">Order Details</h4>
+              <hr>
+              <div class="table-responsive" style="overflow:auto;">
+                <table class="table table-bordered table-responsive" style="width: 100%;">
+                  <thead>
+                    <tr>
+                      <th style="width: 15.55%">Name</th>
+                      <th style="width: 15.55%">Quantity</th>
+                      <th style="width: 15.55%">Price</th>
+                      <th style="width: 15.55%">image</th>
+                    </tr>
+                  </thead>
+                  {% for item in cart_items %}
+                  <tbody>
+                    <tr>
+                      <td style="width: 15.55%"">{{item.all_accesories.title}}</td>
+                    <td style=" width: 15.55%">{{item.quantity}}</td>
+                      <td style="width: 15.55%">Rs.{{item.total_cost}}</td>
+                      <td style="width: 15.55%">
+                        <img src="{{item.all_accesories.accesories_photo.url}}" height="50px" width="50px" alt="">
+                      </td>
+                    </tr>
+                  </tbody>
+                  {% endfor %}
+                </table>
+              </div>
+              <h4>Grand Total :Rs.<span id="total_price" class="float-end">{{total_amount}}</span></h4>
+            </div>
+            <div class="col my-4 mt-0 mb-0">
+              <h3 class="mb-0 slidebar-title"> Enter Address & Other Details:</h3>
+              <hr>
+              <form method="POST" action="{% url 'profile' %}">
+                {% csrf_token %}
+                <input type="hidden" name="amount" id="amount">
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputEmail4">Email</label>
+                    <input type="email" class="form-control" name="email" id="inputEmail4" required placeholder="Email">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress">Address</label>
+                  <input type="text" class="form-control" name="address1" id="inputAddress" required
+                    placeholder="1234 Main St">
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress2">Address line 2</label>
+                  <input type="text" class="form-control" name="address2" required id="inputAddress2"
+                    placeholder="Apartment, studio, or floor">
+                </div>
+                <div class="form-group">
+                  <label for="inputAddress2">Landmark</label>
+                  <input type="text" class="form-control" name="landmark" required id="inputAddress2"
+                    placeholder="Nearest Place">
+                </div>
+                <div class="form-row">
+                  <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" name="city" class="form-control" required id="inputCity">
+                  </div>
+                  <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" name="state" id="inputAddress2" required
+                      placeholder="Enter State">
+                  </div>
+                  <div class="form-group col-md-2">
+                    <label for="inputZip">Pincode</label>
+                    <input type="text" class="form-control" required name="pin" id="inputZip">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="inputPhone">Phone Number</label>
+                  <input type="tel" maxlength="10" class="form-control" required name="phone" id="inputPhone">
+                </div>
+                <button type="submit" class="btn btn-primary mt-3">Place Order</button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

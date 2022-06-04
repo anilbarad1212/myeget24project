@@ -1,0 +1,49 @@
+{% extends 'mobiles/base.html' %}
+{% load static %}
+{% block title %}All-{{data}}-Phone{% endblock title %}
+{% block main-content %}
+<style>
+    .image-resize {
+        height: 150px;
+        object-fit: cover;
+        object-position: center center;
+        margin-top: 15;
+    }
+</style>
+
+<section class="product pt-5">
+    <div class="container py-5">
+
+
+        {% if search_results %}
+        <div class="col-log-5 m-auto text-center">
+            <h4> Search Result For {{query}} </h4>
+        </div>
+        {% else %}
+        <h1>OOPS !!! No Data Founf For {{query}}</h1>
+        {% endif %}
+        <hr>
+        <div class="row">
+            {% for items in search_results %}
+            <div class="col-lg-3 col-6 col-md-6 col-xl-2 text-center mb-2">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <a href="{% url 'product-detail' items.id %}"><img class="img-responsive img-fluid image-resize"
+                                src="{{items.accesories_photo.url}}">
+                        </a>
+                    </div>
+                    <small style="color: rgb(6, 6, 39);">{{items.title}}</small>
+                    <h6 class="fw-bold" style="color: red;">{{items.price}} Rs.</h6>
+                    <small class="text-secondary">{{items.color}}</small>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        <hr>
+
+
+
+
+    </div>
+</section>
+{% endblock main-content %}

@@ -1,0 +1,81 @@
+{% extends 'mobiles/base.html' %}
+{% load static %}
+{% block title %}Cart{% endblock title %}
+{% block main-content %}
+<div class="container my-5">
+  <div class="row">
+    <h1 class="text-center mt-5 mb-5 slidebar-title ">Shopping Cart</h1>
+    <div class="col-sm-12 col-xl-8">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="slidebar-title">Cart</h3>
+          {% for cart in carts %}
+          <hr>
+          <div class="row">
+            <div class="col-sm-3 text-center align-self-center"><img src="{{cart.all_accesories.accesories_photo.url}}"
+                alt="" srcset="" class="img-fluid img-thumbnail shadow-sm" height="150" width="150"> </div>
+            <div class="col-sm-9">
+              <div>
+                <h5>{{cart.all_accesories.title}}</h5>
+                <p class="mb-2 text-muted small">discription</p>
+                <div class="my-3">
+                  <label for="quantity">Quantity:</label>
+                  <a class="minus-cart btn" pid="{{cart.all_accesories.id}}"><i
+                      class="fas fa-minus-square fa-lg"></i></a>
+                  <span id="quantity">{{cart.quantity}}</span>
+                  <a class="plus-cart btn" pid="{{cart.all_accesories.id}}"><i class="fas fa-plus-square fa-lg"></i></a>
+                </div>
+                <div class="d-flex justify-content-between">
+                  <a href="#" class="btn btn-sm btn-secondary mr-3 remove-cart" pid="{{cart.all_accesories.id}}">Remove
+                    item </a>
+                  <p class="mb-0"><span><strong>Rs.{{cart.all_accesories.price}}</strong></span></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-sm-12 col-xl-4">
+      <div class="card">
+        <div class="card-body">
+          <h3 class="slidebar-title">Total Amount</h3>
+          <ul class="list-group">
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 pb-0">
+              Amount<span>Rs.<span id="amount">{{total_amount}}</span></span></li>
+            <li class="list-group-item d-flex justify-content-between align-items-center px-0">Shipping<span>Free
+                Shipping</span></li>
+            <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0 mb-3">
+              <div>
+                <strong>Total</strong> <small>(including GST)</small>
+              </div>
+              <span><strong>Rs.<strong id="total-amount">{{total_amount}}</strong></strong></span>
+            </li>
+            <hr>
+            <div class="fs-6 ">Expected Delivery By :
+              <b style="color: rgb(180, 11, 39);">{{expected_delivery_date}}</b>
+            </div>
+            <hr>
+          </ul>
+          <div class="d-grid"><a href="{% url 'checkout' %}" class="btn btn-primary">Add</a></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<div class="container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card text-center">
+        <div class="card-body">
+          <h5 class="mb-4 slidebar-title">We accept</h5>
+          <img src="{% static 'mobiles/images/Paytm-UPI-Realme.jpg' %}" style="height: 100px;" alt="" class="img-fluid">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock main-content %}

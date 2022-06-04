@@ -1,0 +1,38 @@
+{% extends 'mobiles/base.html' %}
+{% load static %}
+{% block title %}All-Samsung-Phone{% endblock title %}
+{% block main-content %}
+<style>
+    .image-resize {
+        height: 200px;
+        object-fit: cover;
+        object-position: center center;
+        margin-top: 15;
+    }
+</style>
+<section class="product">
+    <div class="container py-5">
+        <div class="row py-5">
+            <div class="col-log-5 m-auto text-center">
+                <h1> Select Your Mobile</h1>
+                <h2 style="color:rgb(248, 26, 92)">{{data}}</h2>
+            </div>
+        </div>
+        <div class="row">
+            {% for mb in mobiles %}
+            <div class="col-lg-3 col-6 col-md-6 col-xl-2 text-center mb-2">
+                <div class="card border-0">
+                    <div class="card-body">
+                        <a href="{% url 'all_parts' mb.id %}"><img class="img-responsive img-fluid image-resize"
+                                src="{{mb.mobile_photo.url}}">
+                        </a>
+                    </div>
+                </div>
+                <h6>{{mb.mobile_name}}</h6>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+{% endblock main-content %}

@@ -142,3 +142,8 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'techm5069@gmail.com'
 EMAIL_HOST_PASSWORD = '9998089890'
+
+import dj_database_url
+
+db_from_env = dj_database_url.config(con_max_age=600)
+DATABASES['default'].update(db_from_env)

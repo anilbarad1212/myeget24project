@@ -25,6 +25,7 @@ class CustomerAddress(models.Model):
 
 class All_Brands(models.Model):
     brand_name = models.CharField(max_length=200)
+    brand_photo = models.ImageField(upload_to='brandimg')
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -155,4 +156,3 @@ class Payment(models.Model):
     order_number = models.CharField(max_length=5, null=True)
     email = models.EmailField(max_length=15, default='anilbarad9@gmail.com')
     total_price = models.FloatField(default=0)
-        

@@ -97,42 +97,19 @@
         class="fw-bold">Product 12</span><br><span class="fs-5">Rs. 200</span></div>
   </div>
 </div>
-<!-- End 1st Product Slider -->
 
-<!-- Payment Info Section -->
-<!-- <div class="container my-5">
+<div class="container" id="allthebrands" style="padding-left: 50px;">
   <div class="row">
-    <div class="col-sm-6">
-      <div class="card mb-6">
-        <div class="card-body">
-          <img src="{% static 'mobiles/images/payavail/cc.jpg' %}" alt="" srcset="" class="img-fluid">
-        </div>
-      </div>
+    {% for brands in all_brand_photos %}
+    <div class="col-sm-4 col-xl-2 col-4 ">
+      <a href="{% url 'all-mobiles' brands.brand_name %}"><img src="{{brands.brand_photo.url}}">
+      </a>
     </div>
-    <div class="col-sm-6">
-      <div class="card mb-6">
-        <div class="card-body">
-          <img src="{% static 'mobiles/images/payavail/upi.jpg' %}" alt="" srcset="" class="img-fluid">
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="card mb-6">
-        <div class="card-body">
-          <img src="{% static 'mobiles/images/payavail/nb.jpg' %}" alt="" srcset="" class="img-fluid">
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-6">
-      <div class="card mb-6">
-        <div class="card-body">
-          <img src="{% static 'mobiles/images/payavail/bj.jpg' %}" alt="" srcset="" class="img-fluid">
-        </div>
-      </div>
-    </div>
+    {% endfor %}
   </div>
-</div> -->
-<!-- End Payment Info Section -->
+</div>
+
+
 
 <!-- 2nd Product Slider -->
 <div class="mx-6">
@@ -148,4 +125,4 @@
   </div>
 </div>
 <!-- End 2nd Product Slider -->
-{% endblock main-content %} 
+{% endblock main-content %}

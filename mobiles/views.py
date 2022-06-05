@@ -140,8 +140,14 @@ def home(request):
     total_item = 0
     if request.user.is_authenticated:
         total_item = len(Cart.objects.filter(user=request.user))
-    trending_deals=All_Accesories.objects.filter(sub_category='TP')
-    return render(request, 'mobiles/home.html', {'total_item': total_item,'trending_deals':trending_deals})
+    trending_deals = All_Accesories.objects.filter(sub_category='TP')
+    all_brand_photos = All_Brands.objects.all()
+    return render(
+        request, 'mobiles/home.html', {
+            'total_item': total_item,
+            'trending_deals': trending_deals,
+            'all_brand_photos': all_brand_photos
+        })
 
 
 def all_mobiles(request, data):

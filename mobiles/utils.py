@@ -5,7 +5,7 @@ from twilio.rest import Client
 import os
 
 
-def genret_order_id(length=10):
+def genret_order_id(length=5):
     key = ''
     for i in range(length):
         key += random.choice(string.ascii_lowercase + string.digits)

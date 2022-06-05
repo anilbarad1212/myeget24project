@@ -127,8 +127,8 @@ STATUS_CHOICES = (
 
 
 class OrderPlaced(models.Model):
-    order_number = models.CharField(max_length=50, null=True)
-    payment_status = models.CharField(max_length=50, null=True)
+    order_number = models.CharField(max_length=5, null=True)
+    payment_status = models.CharField(max_length=15, null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     customer_address = models.ForeignKey(CustomerAddress,
                                          on_delete=models.CASCADE)
@@ -136,9 +136,9 @@ class OrderPlaced(models.Model):
                                        on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     item_total_price = models.FloatField(default=0)
-    expected_delivery_date = models.CharField(max_length=100)
+    expected_delivery_date = models.CharField(max_length=20)
     message = models.TextField(null=True)
-    status = models.CharField(max_length=50,
+    status = models.CharField(max_length=20,
                               choices=STATUS_CHOICES,
                               default='Accepted')
     ordered_date = models.DateTimeField(auto_now_add=True)
@@ -152,7 +152,7 @@ class OrderPlaced(models.Model):
 class Payment(models.Model):
     payment_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=8, null=True)
-    email = models.EmailField(max_length=30, default='anilbarad9@gmail.com')
+    order_number = models.CharField(max_length=5, null=True)
+    email = models.EmailField(max_length=15, default='anilbarad9@gmail.com')
     total_price = models.FloatField(default=0)
         

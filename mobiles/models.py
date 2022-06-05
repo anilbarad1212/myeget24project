@@ -127,8 +127,8 @@ STATUS_CHOICES = (
 
 
 class OrderPlaced(models.Model):
-    order_number = models.CharField(max_length=8, null=True)
-    payment_status = models.CharField(max_length=250, null=True)
+    order_number = models.CharField(max_length=50, null=True)
+    payment_status = models.CharField(max_length=50, null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     customer_address = models.ForeignKey(CustomerAddress,
                                          on_delete=models.CASCADE)

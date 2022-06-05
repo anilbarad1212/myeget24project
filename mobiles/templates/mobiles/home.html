@@ -58,7 +58,7 @@
       <h1>Choose Your Brand</h1>
       <button type="button" id="#allthebrands" class="bttn-1">Click Here</button>
     </div>
-  </div>x`
+  </div>
 </div>
 <!-- End Live Sale Section -->
 {% endblock livesale %}
@@ -98,35 +98,6 @@
   </div>
 </div>
 
-<!-- <div class="container text-center" id="allthebrands" style="padding-left: 50px;"> -->
-<!-- <div class="row">
-  {% for brands in all_brand_photos %}
-  <div class="col-sm-4 col-xl-2 col-4 m-auto">
-    <a href="{% url 'all-mobiles' brands.brand_name %}"><img class="img-responsive img-fluid"
-        src=" {{brands.brand_photo.url}}">
-    </a>
-  </div>
-  {% endfor %}
-</div> -->
-<!-- </div> -->
-
-<div class="row">
-  {% for brands in all_brand_photos %}
-  <div class="col-lg-3 col-4 col-md-6 col-xl-2 text-center mb-2 col-sm-4">
-    <div class="card border-0">
-      <div class="card-body">
-        <a href="{% url 'all-mobiles' brands.brand_name %}"><img class="img-responsive img-fluid"
-            src="{{brands.brand_photo.url}}">
-        </a>
-      </div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-
-
-
-
 <!-- 2nd Product Slider -->
 <div class="mx-6">
   <h2 class="slidebar-title">Trending Deals</h2>
@@ -141,4 +112,20 @@
   </div>
 </div>
 <!-- End 2nd Product Slider -->
+
+<!-- brands -->
+<div class="row">
+  {% for brands in all_brand_photos %}
+  <div class="col-lg-3 col-4 col-md-6 col-xl-2 text-center mb-2 col-sm-4">
+    <div class="card border-0">
+      <div class="card-body">
+        <a href="{% url 'all-mobiles' brands.brand_name %}"><img class="img-responsive img-fluid"
+            src="{{brands.brand_photo.url}}">
+        </a>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+<!-- end brands -->
 {% endblock main-content %}

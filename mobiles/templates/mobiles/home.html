@@ -56,7 +56,9 @@
     </div>
     <div class="col-sm-6 col-xl-12" style="margin-top:2em;">
       <h1>Choose Your Brand</h1>
-      <button type="button" id="#allthebrands" class="bttn-1">Click Here</button>
+      <a style="text-decoration: none;" type="button" href="#brands" class="bttn-1">
+        <h4 style="padding-top: 20px;">Click Here</h4>
+      </a>
     </div>
   </div>
 </div>
@@ -114,7 +116,7 @@
 <!-- End 2nd Product Slider -->
 
 <!-- brands -->
-<div class="row">
+<div class="row" id="brands">
   {% for brands in all_brand_photos %}
   <div class="col-lg-3 col-4 col-md-6 col-xl-2 text-center mb-2 col-sm-4">
     <div class="card border-0">

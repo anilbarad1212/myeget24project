@@ -13,7 +13,7 @@ from django.views import View
 from django.contrib import messages
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from .utils import genret_order_id, send_sms, send_link
+from .utils import genret_order_id, send_sms
 import mobiles.Checksum as Checksum
 import datetime
 from django.http import HttpResponse
@@ -335,7 +335,7 @@ def show_cart(request):
             date = tday + tdelta
             month = date.strftime("%B")
             years = date.strftime("%Y")
-            weekday = date.strftime("%A")
+            weekday = date.strftime("%A")   
             date = date.strftime("%d")
             expected_delivery_date = weekday + '    , ' + date + ' ' + month + ' ' + years
             return render(
@@ -426,10 +426,10 @@ def buy_now(request):
 
 
 def profileView(request):
+    order_id = genret_order_id()
     if request.method == 'POST':
         user = request.user
         total_amount = request.POST.get('amount')
-        total_cost = request.POST.get('totalcost')
         print(total_amount, 'total amount')
         print(total_amount, 'total cost')
         email = request.POST.get('email')
@@ -441,7 +441,8 @@ def profileView(request):
         pincode = request.POST.get('pin')
         mobile_number = request.POST.get('phone')
         order_id = genret_order_id()
-        reg = CustomerAddress.objects.create(user=user,
+        reg = CustomerAddress.objects.create(order_number=order_id,
+                                             user=user,
                                              email=email,
                                              address1=adddress_one,
                                              address2=address_two,
@@ -454,8 +455,6 @@ def profileView(request):
         messages.success(
             request,
             'Congratulations !! Your Address Has Been Updated Successfully')
-
-        order_id = genret_order_id()
 
         tday = datetime.date.today()
         tdelta = datetime.timedelta(days=2)
@@ -496,8 +495,11 @@ def profileView(request):
             'INDUSTRY_TYPE_ID': 'Retail',
             'WEBSITE': 'WEBSTAGING',
             'CHANNEL_ID': 'WEB',
-            'CALLBACK_URL': 'http://eget24.herokuapp.com/handlerequest/',
+            'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
         }
+        # http://127.0.0.1:8000/
+        # eget24.herokuapp.com
+
         param_dict['CHECKSUMHASH'] = Checksum.generate_checksum(
             param_dict, MERCHANT_KEY)
         return render(request, 'mobiles/paytm.html',
@@ -509,7 +511,8 @@ def address(request):
 
 
 def orders(request):
-    return render(request, 'mobiles/orders.html')
+    my_orders = OrderPlaced.objects.filter(user=request.user)
+    return render(request, 'mobiles/orders.html', {'my_orders': my_orders})
 
 
 def mobile(request):
@@ -556,15 +559,19 @@ def handlerequest(request):
     verify = Checksum.verify_checksum(response_dict, MERCHANT_KEY, checksum)
     if verify:
         if response_dict['RESPCODE'] == '01':
-            print(order_id, 'O0RDERID SUCCESS')
             filter_data = OrderPlaced.objects.filter(
                 order_number=order_id).update(payment_status=str(resp_msg))
-            print('order successful')
+
+            
         else:
             print('order was not successful because' +
                   response_dict['RESPMSG'])
             delete_record = OrderPlaced.objects.filter(
-                order_number=order_id).update(payment_status=str(resp_msg))
+                order_number=order_id).delete()
+            delete_address = CustomerAddress.objects.filter(
+                order_number=order_id).delete()
+            delete_Payment_record = Payment.objects.filter(
+                order_number=order_id).delete()
     return render(request, 'mobiles/paymentstatus.html',
                   {'response': response_dict})
 

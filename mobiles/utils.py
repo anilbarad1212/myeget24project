@@ -1,3 +1,4 @@
+from operator import ge
 import random
 import string
 
@@ -8,8 +9,8 @@ import os
 def genret_order_id(length=5):
     key = ''
     for i in range(length):
-        key += random.choice(string.ascii_lowercase + string.digits)
-    return key
+        key += random.choice(string.digits + string.ascii_lowercase)
+    return 'Eget24-' + key
 
 
 account_sid = 'AC9aa0fa32a744f5ca33458e15ae67fff6'
@@ -25,7 +26,8 @@ def send_sms(user_code, phone_number):
     print(message.sid)
 
 
-def send_link(user_link, phone_number):
+
+def send_payment_info(user_link, phone_number):
     message = client.messages.create(body=f'Hi ! Your Otp is- {user_link}',
                                      from_='+19706151513',
                                      to=f'+91{phone_number}')

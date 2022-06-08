@@ -1,3 +1,4 @@
+import email
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -8,6 +9,7 @@ class CustomUser(AbstractUser):
 
 
 class CustomerAddress(models.Model):
+    order_number = models.CharField(max_length=5, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(max_length=30, default='anilbarad9@gmail.com')
     address1 = models.CharField(max_length=500)
@@ -128,8 +130,8 @@ STATUS_CHOICES = (
 
 
 class OrderPlaced(models.Model):
-    order_number = models.CharField(max_length=5, null=True)
-    payment_status = models.CharField(max_length=15, null=True)
+    order_number = models.CharField(max_length=12, blank=True)
+    payment_status = models.CharField(max_length=15, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     customer_address = models.ForeignKey(CustomerAddress,
                                          on_delete=models.CASCADE)
@@ -138,7 +140,7 @@ class OrderPlaced(models.Model):
     quantity = models.PositiveIntegerField(default=1)
     item_total_price = models.FloatField(default=0)
     expected_delivery_date = models.CharField(max_length=20)
-    message = models.TextField(null=True)
+    message = models.TextField(blank=True, default='hello')
     status = models.CharField(max_length=20,
                               choices=STATUS_CHOICES,
                               default='Accepted')
@@ -151,8 +153,11 @@ class OrderPlaced(models.Model):
 
 
 class Payment(models.Model):
+    order_number = models.CharField(max_length=5, blank=True)
     payment_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-    order_number = models.CharField(max_length=5, null=True)
     email = models.EmailField(max_length=15, default='anilbarad9@gmail.com')
     total_price = models.FloatField(default=0)
+
+    def __str__(self):
+        return f'{self.payment_id} - {self.order_number} - {self.user} - {self.email} - {self.total_price}'

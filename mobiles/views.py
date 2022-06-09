@@ -13,7 +13,7 @@ from django.views import View
 from django.contrib import messages
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from .utils import genret_order_id, send_sms
+from .utils import genret_order_id, sent_order_confirmation_mesaage
 import mobiles.Checksum as Checksum
 import datetime
 from django.http import HttpResponse
@@ -335,7 +335,7 @@ def show_cart(request):
             date = tday + tdelta
             month = date.strftime("%B")
             years = date.strftime("%Y")
-            weekday = date.strftime("%A")   
+            weekday = date.strftime("%A")
             date = date.strftime("%d")
             expected_delivery_date = weekday + '    , ' + date + ' ' + month + ' ' + years
             return render(
@@ -547,6 +547,10 @@ def handlerequest(request):
     # paytm will send you post request here
     form = request.POST
     order_id = request.POST.get('ORDERID')
+    txn_id = request.POST.get('TXNID')
+    txn_date = request.POST.get('TXNDATE')
+    txn_status = request.POST.get('STATUS')
+    bank_txn_id = request.POST.get('BANKTXNID')
     resp_msg = request.POST.get('RESPMSG')
     print('THIS IS FORM DATA', form)
     print()
@@ -561,8 +565,33 @@ def handlerequest(request):
         if response_dict['RESPCODE'] == '01':
             filter_data = OrderPlaced.objects.filter(
                 order_number=order_id).update(payment_status=str(resp_msg))
+            send_order_confirm_message = OrderPlaced.objects.filter(
+                order_number=order_id)
+            for n in send_order_confirm_message:
+                b = n.user.phone_number
+            phone_number = b
+            my_list = []
+            for od in send_order_confirm_message:
+                print('ODODODODODO', od)
+                print('od', od.all_accesories.title)
+                my_list.append(od.all_accesories.title + ' ' + 'quantity :' +
+                               str(od.quantity) + ' ' + 'price :' +
+                               str(od.item_total_price) + ',')
 
-            
+            def listtostring(my_list):
+                str1 = ""
+                for ele in my_list:
+                    str1 += ele
+                return str1
+
+            my_data = listtostring(my_list)
+            total_price = Payment.objects.get(order_number=order_id)
+            total_amount = total_price.total_price
+            sent_order_confirmation_mesaage(phone_number, my_data,
+                                            total_amount, order_id, txn_id,
+                                            txn_date, txn_status, bank_txn_id,
+                                            resp_msg)
+
         else:
             print('order was not successful because' +
                   response_dict['RESPMSG'])

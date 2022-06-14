@@ -1,4 +1,6 @@
 import email
+from gzip import READ
+from click import Choice
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
@@ -130,7 +132,7 @@ STATUS_CHOICES = (
 
 
 class OrderPlaced(models.Model):
-    order_number = models.CharField(max_length=12, blank=True)
+    order_number = models.CharField(max_length=20, blank=True)
     payment_status = models.CharField(max_length=15, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     customer_address = models.ForeignKey(CustomerAddress,
@@ -139,7 +141,7 @@ class OrderPlaced(models.Model):
                                        on_delete=models.CASCADE)
     quantity = models.PositiveIntegerField(default=1)
     item_total_price = models.FloatField(default=0)
-    expected_delivery_date = models.CharField(max_length=20)
+    expected_delivery_date = models.CharField(max_length=25)
     message = models.TextField(blank=True, default='hello')
     status = models.CharField(max_length=20,
                               choices=STATUS_CHOICES,
@@ -150,6 +152,23 @@ class OrderPlaced(models.Model):
     def __str__(self):
         return f'{self.id} - {self.user} - {self.customer_address} - {self.all_accesories} - \
         {self.quantity} - {self.ordered_date} - {self.status}'
+
+
+RETURN_STATUS = (('Processing', 'Processing'), ('Accepted', 'Accepted'),
+                 ('Rejected', 'Rejected'), ('Return-Success',
+                                            'Return-Success'))
+
+
+class Return_Order(models.Model):
+    order_placed = models.ForeignKey(OrderPlaced, on_delete=models.CASCADE)
+    return_request = models.CharField(max_length=40)
+    return_status = models.CharField(choices=RETURN_STATUS,
+                                     max_length=20,
+                                     default='Processing')
+    return_request_date = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f'{self.order_placed} - {self.return_request} - {self.return_status} - {self.return_request_date}'
 
 
 class Payment(models.Model):

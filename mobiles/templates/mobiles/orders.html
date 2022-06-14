@@ -23,6 +23,9 @@
                     <p>Price : {{orders.item_total_price}}</p>
 
                 </div>
+                {% if orders.status == 'Delivered' %}
+                <a href="{% url 'return-order' orders.id %}"><button class="btn btn-primary">Return</button></a>
+                {% endif %}
                 <div class="col-sm-3 fw-bold">
                     <p> Order Status : {{ orders.status }}</p>
                     {% if orders.status == 'Accepted' %}

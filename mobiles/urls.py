@@ -64,6 +64,7 @@ urlpatterns = [
              template_name='mobiles/password_reset_complete.html'),
          name='password_reset_complete'),
     path('search/', views.search, name='search-product'),
+    path('return/<int:id>', views.return_order, name='return-order'),
     re_path(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT}),
 ]

@@ -2,7 +2,7 @@ from ast import Return
 from pickle import TRUE
 from unicodedata import category
 from django.shortcuts import redirect, render
-from mobiles.models import All_Accesories, All_Brands, All_Mobiles, Cart, CustomUser, CustomerAddress, OrderPlaced, Payment
+from mobiles.models import All_Accesories, All_Brands, All_Mobiles, Cart, CustomUser, CustomerAddress, OrderPlaced, Payment, Return_Order
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CodeForm, CustomerRegistrationForm, LoginForm, Change_Mobile_Number_Form
@@ -19,6 +19,7 @@ import datetime
 from django.http import HttpResponse
 from django.db import transaction
 import random
+from dateutil.parser import parse
 from django.contrib.auth.decorators import login_required
 
 MERCHANT_KEY = 'RX0hpjvtTBiXZleF'
@@ -587,10 +588,10 @@ def handlerequest(request):
             my_data = listtostring(my_list)
             total_price = Payment.objects.get(order_number=order_id)
             total_amount = total_price.total_price
-            sent_order_confirmation_mesaage(phone_number, my_data,
-                                            total_amount, order_id, txn_id,
-                                            txn_date, txn_status, bank_txn_id,
-                                            resp_msg)
+            # sent_order_confirmation_mesaage(phone_number, my_data,
+            # total_amount, order_id, txn_id,
+            # txn_date, txn_status, bank_txn_id,
+            # resp_msg)
 
         else:
             print('order was not successful because' +
@@ -615,13 +616,34 @@ def search(request):
             ) or All_Accesories.objects.filter(
                 description=query) or All_Accesories.objects.filter(
                     all_mobiles__all_brands__brand_name=query)
-
-    # search_results = [
-    #     items
-    #     for items in All_Accesories.objects.values('title', 'description')
-    #     if query in items
-    # ]
     return render(request, 'mobiles/search-product.html', {
         'search_results': search_results,
         'query': query
     })
+
+
+def return_order(request, id):
+    order = OrderPlaced.objects.get(id=id)
+    return_requestt = Return_Order.objects.filter(order_placed=order)
+    if return_requestt:
+        for i in return_requestt:
+            print('THIS IS RETURN REQUEST', i.return_request)
+            print(i.return_request)
+            print(i.return_status)
+    else:
+        print('no order found')
+
+    delevery_date = order.expected_delivery_date
+    date_format = parse(delevery_date)
+    format_delevery_date = date_format.date()
+    todays_date = datetime.date.today()
+    result_date = todays_date - format_delevery_date
+    total_days = result_date.days
+    print(total_days)
+    print(type(total_days))
+    if total_days > 15:
+        #  messages.success(
+        #             request,
+        #             'sorry!! you can not return this orer now')
+        pass
+    return render(request, 'mobiles/orders.html')

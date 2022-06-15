@@ -496,7 +496,7 @@ def profileView(request):
             'INDUSTRY_TYPE_ID': 'Retail',
             'WEBSITE': 'WEBSTAGING',
             'CHANNEL_ID': 'WEB',
-            'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
+            'CALLBACK_URL': 'http://eget24.herokuapp.com/handlerequest/',
         }
         # http://127.0.0.1:8000/
         # eget24.herokuapp.com
@@ -624,26 +624,25 @@ def search(request):
 
 def return_order(request, id):
     order = OrderPlaced.objects.get(id=id)
-    return_requestt = Return_Order.objects.filter(order_placed=order)
-    if return_requestt:
-        for i in return_requestt:
-            print('THIS IS RETURN REQUEST', i.return_request)
-            print(i.return_request)
-            print(i.return_status)
+    return_requested = Return_Order.objects.filter(order_placed=order)
+    if return_requested:
+        messages.success(
+            request, 'You Have All Ready Requested For Return This Item!!')
     else:
-        print('no order found')
-
-    delevery_date = order.expected_delivery_date
-    date_format = parse(delevery_date)
-    format_delevery_date = date_format.date()
-    todays_date = datetime.date.today()
-    result_date = todays_date - format_delevery_date
-    total_days = result_date.days
-    print(total_days)
-    print(type(total_days))
-    if total_days > 15:
-        #  messages.success(
-        #             request,
-        #             'sorry!! you can not return this orer now')
-        pass
-    return render(request, 'mobiles/orders.html')
+        delevery_date = order.expected_delivery_date
+        date_format = parse(delevery_date)
+        format_delevery_date = date_format.date()
+        todays_date = datetime.date.today()
+        result_date = todays_date - format_delevery_date
+        total_days = result_date.days
+        print(total_days)
+        print(type(total_days))
+        if total_days > 15:
+            messages.success(request,
+                             'sorry!! you can not return this orer now')
+        else:
+            return_request_accepted = Return_Order.objects.create(
+                order_placed=order)
+    user_returns = Return_Order.objects.filter(order_placed__user=request.user)
+    return render(request, 'mobiles/return_order.html',
+                  {'user_returns': user_returns})

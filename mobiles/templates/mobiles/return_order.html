@@ -1,0 +1,40 @@
+{% extends 'mobiles/base.html' %}
+{% load static %}
+{% block title %}My Orders{% endblock title %}
+{% block main-content %}
+<div class="container my-5 pt-5">
+    <div class="row">
+        <h3>Welcome {{ request.user }}</h3>
+        <div class="col-sm-2 border-end">
+            <ul class="list-unstyled">
+                <li class="d-grid"><a href="{% url 'orders' %}" class="btn btn-primary">Return Orders</a></li>
+            </ul>
+        </div>
+        <div class="col-sm-9 offset-sm-1">
+            {% if messages %}
+            {% for message in messages %}
+            <p {% if message.tags %} class="alert alert-{{message.tags}} mb-5 {% endif %}">{{message}}</p>
+            {% endfor %}
+            {% endif %}
+            {% for returns in user_returns %}
+            <div class="row shadow-sm mb-3">
+                <div class="col-sm-2">
+                    <img src="{{ returns.order_placed.all_accesories.accesories_photo.url }}" alt="" srcset=""
+                        class="img-fluid" height="100" width="100">
+                </div>
+                <div class="col-sm-7">
+                    <p>Order Number : {{returns.order_placed.order_number}}</p>
+                    <p>Product : {{returns.order_placed.all_accesories.title}}</p>
+                    <p>Quantity : {{returns.order_placed.quantity}}</p>
+                    <p>Price : {{returns.order_placed.item_total_price}}</p>
+                    <p>Return Status : {{returns.return_status}}</p>
+                    <P>Return Request Date :{{returns.return_request_date}}</P>
+
+                </div>
+
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock main-content %}

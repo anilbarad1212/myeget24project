@@ -24,12 +24,16 @@
                 </div>
                 <div class="col-sm-7">
                     <p>Order Number : {{returns.order_placed.order_number}}</p>
+                    <p>Product Return Number : {{returns.product_return_number}}</p>
                     <p>Product : {{returns.order_placed.all_accesories.title}}</p>
                     <p>Quantity : {{returns.order_placed.quantity}}</p>
                     <p>Price : {{returns.order_placed.item_total_price}}</p>
                     <p>Return Status : {{returns.return_status}}</p>
                     <P>Return Request Date :{{returns.return_request_date}}</P>
-
+                    {% if returns.return_status == 'Processing' or returns.return_status == 'Accepted' %}
+                    <a href="{% url 'cancel-return-request' returns.id %}"><button
+                            class="btn btn-danger mb-5">Cancel</button></a>
+                    {% endif %}
                 </div>
 
             </div>

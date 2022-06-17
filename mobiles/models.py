@@ -11,7 +11,7 @@ class CustomUser(AbstractUser):
 
 
 class CustomerAddress(models.Model):
-    order_number = models.CharField(max_length=5, blank=True)
+    order_number = models.CharField(max_length=20, blank=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     email = models.EmailField(max_length=30, default='anilbarad9@gmail.com')
     address1 = models.CharField(max_length=500)
@@ -155,20 +155,21 @@ class OrderPlaced(models.Model):
 
 
 RETURN_STATUS = (('Processing', 'Processing'), ('Accepted', 'Accepted'),
-                 ('Rejected', 'Rejected'), ('Return-Success',
-                                            'Return-Success'))
+                 ('Return-Success', 'Return-Success'), ('Cancelled',
+                                                        'Cancelled'))
 
 
 class Return_Order(models.Model):
     order_placed = models.ForeignKey(OrderPlaced, on_delete=models.CASCADE)
-    return_request = models.CharField(max_length=40)
+    product_return_number = models.CharField(max_length=20, blank=True)
+    return_request_message = models.CharField(max_length=45)
     return_status = models.CharField(choices=RETURN_STATUS,
                                      max_length=20,
                                      default='Processing')
     return_request_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.order_placed} - {self.return_request} - {self.return_status} - {self.return_request_date}'
+        return f'{self.order_placed} - {self.return_request_message} - {self.return_status} - {self.return_request_date}'
 
 
 class Payment(models.Model):

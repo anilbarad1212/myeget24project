@@ -13,6 +13,13 @@ def genret_order_id(length=12):
     return 'Eget24-' + key
 
 
+def genret_product_return_id(length=12):
+    return_key = ''
+    for i in range(length):
+        return_key += random.choice(string.digits)
+    return 'Eget24-' + return_key
+
+
 account_sid = 'AC9aa0fa32a744f5ca33458e15ae67fff6'
 auth_token = '76020542d1c3cfbdd04b891515c4bfc7'
 client = Client(account_sid, auth_token)

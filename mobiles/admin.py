@@ -101,7 +101,7 @@ class PaymentAdmin(admin.ModelAdmin):
 
 
 class ReturnOrdertAdmin(admin.ModelAdmin):
-    list_display = ('order_placed', 'return_request', 'return_status',
+    list_display = ('order_placed', 'return_request_message', 'return_status',
                     'return_request_date')
 
 

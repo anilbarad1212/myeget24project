@@ -65,6 +65,9 @@ urlpatterns = [
          name='password_reset_complete'),
     path('search/', views.search, name='search-product'),
     path('return/<int:id>', views.return_order, name='return-order'),
+    path('cancel-return-request/<int:id>',
+         views.cancel_return_request,
+         name='cancel-return-request'),
     re_path(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT}),
 ]

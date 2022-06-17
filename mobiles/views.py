@@ -13,7 +13,7 @@ from django.views import View
 from django.contrib import messages
 import requests
 from django.views.decorators.csrf import csrf_exempt
-from .utils import genret_order_id, sent_order_confirmation_mesaage
+from .utils import genret_order_id, genret_product_return_id, sent_order_confirmation_mesaage
 import mobiles.Checksum as Checksum
 import datetime
 from django.http import HttpResponse
@@ -74,9 +74,7 @@ def verify_view(request):
 
 
 def register(request):
-    print('REGISTRATION')
     form = CustomerRegistrationForm(request.POST or None)
-    print('FORM', form)
 
     if request.method == 'POST':
         form = CustomerRegistrationForm(request.POST)
@@ -117,23 +115,16 @@ def register(request):
 
 def change_phone_number(request):
     pk = request.session.get('pk')
-    # user = CustomUser.objects.get(pk=pk)
-    # print('USER IN SIDE PHONE NUMBER',user)
     if request.method == 'POST':
         user = CustomUser.objects.get(pk=pk)
-        print('USER INSIDE PHONE NUMBER', user)
         form = Change_Mobile_Number_Form(request.POST, instance=user)
-        print(form, 'form')
         if form.is_valid():
             form.save()
             request.session['pk'] = user.pk
             return redirect('verify')
     else:
         user = CustomUser.objects.get(pk=pk)
-        print(user.id)
         form = Change_Mobile_Number_Form(instance=user)
-        # request.session['pk'] = user.pk
-        # return redirect('verify')
     return render(request, 'mobiles/change-number.html', {'form': form})
 
 
@@ -170,16 +161,10 @@ def accesories_view(request, id):
     mobile = All_Mobiles.objects.get(id=id)
     back_pannel_cover = All_Accesories.objects.filter(all_mobiles=mobile,
                                                       category='BCK-PNEL-CVR')
-    print('backpannelcover', back_pannel_cover)
-    print()
     bettry_connector = All_Accesories.objects.filter(all_mobiles=mobile,
                                                      category='BTR-CNCTR')
-    print('bettry connector', bettry_connector)
-    print()
     bettries = All_Accesories.objects.filter(all_mobiles=mobile,
                                              category='BTR')
-    print('bettries', bettries)
-    print()
     camera_lense = All_Accesories.objects.filter(all_mobiles=mobile,
                                                  category='CMR-LNS')
     charging_conctr = All_Accesories.objects.filter(all_mobiles=mobile,
@@ -307,10 +292,8 @@ def add_to_cart(request):
     product_id = All_Accesories.objects.get(id=product)
     all_ready_cart = Cart.objects.filter(user=user, all_accesories=product_id)
     if all_ready_cart:
-        print('all ready cart', all_ready_cart)
         all_ready_cart.delete()
     cart_items = Cart.objects.create(user=user, all_accesories=product_id)
-    print('cart item', cart_items)
     cart_items.save()
     return redirect('/cart')
 
@@ -431,8 +414,6 @@ def profileView(request):
     if request.method == 'POST':
         user = request.user
         total_amount = request.POST.get('amount')
-        print(total_amount, 'total amount')
-        print(total_amount, 'total cost')
         email = request.POST.get('email')
         adddress_one = request.POST.get('address1')
         address_two = request.POST.get('address2')
@@ -496,7 +477,7 @@ def profileView(request):
             'INDUSTRY_TYPE_ID': 'Retail',
             'WEBSITE': 'WEBSTAGING',
             'CHANNEL_ID': 'WEB',
-            'CALLBACK_URL': 'http://eget24.herokuapp.com/handlerequest/',
+            'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
         }
         # http://127.0.0.1:8000/
         # eget24.herokuapp.com
@@ -542,7 +523,6 @@ def checkout(request):
         })
 
 
-@transaction.atomic
 @csrf_exempt
 def handlerequest(request):
     # paytm will send you post request here
@@ -553,8 +533,6 @@ def handlerequest(request):
     txn_status = request.POST.get('STATUS')
     bank_txn_id = request.POST.get('BANKTXNID')
     resp_msg = request.POST.get('RESPMSG')
-    print('THIS IS FORM DATA', form)
-    print()
     response_dict = {}
     for i in form.keys():
         response_dict[i] = form[i]
@@ -573,8 +551,6 @@ def handlerequest(request):
             phone_number = b
             my_list = []
             for od in send_order_confirm_message:
-                print('ODODODODODO', od)
-                print('od', od.all_accesories.title)
                 my_list.append(od.all_accesories.title + ' ' + 'quantity :' +
                                str(od.quantity) + ' ' + 'price :' +
                                str(od.item_total_price) + ',')
@@ -608,7 +584,6 @@ def handlerequest(request):
 
 def search(request):
     query = request.GET.get('search')
-    print(query, 'QUERY')
     search_results = All_Accesories.objects.filter(
         title=query) or All_Accesories.objects.filter(
             description=query) or All_Accesories.objects.filter(
@@ -635,14 +610,24 @@ def return_order(request, id):
         todays_date = datetime.date.today()
         result_date = todays_date - format_delevery_date
         total_days = result_date.days
-        print(total_days)
-        print(type(total_days))
         if total_days > 15:
             messages.success(request,
                              'sorry!! you can not return this orer now')
         else:
+            return_mesage = 'customer has request for return this item'
+            return_number = genret_product_return_id()
             return_request_accepted = Return_Order.objects.create(
-                order_placed=order)
+                order_placed=order,
+                product_return_number=return_number,
+                return_request_message=return_mesage)
+    user_returns = Return_Order.objects.filter(order_placed__user=request.user)
+    return render(request, 'mobiles/return_order.html',
+                  {'user_returns': user_returns})
+
+
+def cancel_return_request(request, id):
+    cancel_order = Return_Order.objects.filter(id=id).delete()
+    messages.success(request, 'Return Request Has Been Cancelled!!')
     user_returns = Return_Order.objects.filter(order_placed__user=request.user)
     return render(request, 'mobiles/return_order.html',
                   {'user_returns': user_returns})

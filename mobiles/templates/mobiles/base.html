@@ -63,18 +63,22 @@
                 <div>
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                         <li class="nav-item dropdown mx-2">
+                            {% if request.user.is_authenticated %}
                             <a class="nav-link dropdown-toggle self" style="color:#fff;" href="#" id="profileDropdown"
                                 role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 {{request.user}}
                             </a>
+                            {% endif %}
                             <ul class="dropdown-menu" style="background-color:rgb(6, 6, 39);"
                                 aria-labelledby="profileDropdown">
                                 <li><a class="dropdown-item self" style="color:  #fff" href="{% url 'orders' %}">My
                                         Orders</a>
                                 </li>
                         </li>
-                        <li><a class="dropdown-item self" style="color: #fff;" href="#">Logout</a></li>
+                        <li><a class="dropdown-item self" style="color: #fff;" href="{% url 'log_out' %}">Logout</a>
+                        </li>
                     </ul>
+
                     </li>
                     <li class="nav-item mx-2">
                         <a href="{% url 'show-cart' %}" class="nav-link self" style="color:#fff;"><span

@@ -22,8 +22,9 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 
 class CustomerAddressAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'email', 'address1', 'address2', 'landmark',
-                    'city', 'state', 'pincode', 'mobile_number', 'date_added')
+    list_display = ('id', 'order_number', 'user', 'email', 'address1',
+                    'address2', 'landmark', 'city', 'state', 'pincode',
+                    'mobile_number', 'date_added')
 
 
 class AllBrandsAdmin(admin.ModelAdmin):
@@ -105,6 +106,14 @@ class ReturnOrdertAdmin(admin.ModelAdmin):
                     'return_request_date')
 
 
+class Paytm_Post_Data_Admin(admin.ModelAdmin):
+    list_display = ('id', 'marchent_id', 'transaction_id',
+                    'transaction_amount', 'payment_mode', 'currency',
+                    'transaction_date', 'transaction_status', 'response_code',
+                    'response_message', 'gateway_name', 'bank_transaction_id',
+                    'bank_name', 'checksum_hash')
+
+
 admin.site.register(CustomerAddress, CustomerAddressAdmin)
 admin.site.register(All_Brands, AllBrandsAdmin)
 admin.site.register(All_Mobiles, AllMobilesAdmin)
@@ -113,3 +122,4 @@ admin.site.register(Cart, CartAdmin)
 admin.site.register(OrderPlaced, OrderPlacedAdmin)
 admin.site.register(Payment, PaymentAdmin)
 admin.site.register(Return_Order, ReturnOrdertAdmin)
+admin.site.register(Paytm_Post_Data, Paytm_Post_Data_Admin)

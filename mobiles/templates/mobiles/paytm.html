@@ -2,8 +2,8 @@
 {% load static %}
 {% block title %}Product Detail{% endblock title %}
 {% block main-content %}
-<h1>Redirecting you to the merchant....</h1>
-<h1>Please do not refresh your page....</h1>
+<h1 class="text-center">Redirecting you to the merchant....</h1>
+<h1 class="text-center">Please do not refresh your page....</h1>
 <h1>{{request.user}}</h1>
 <form action="https://securegw-stage.paytm.in/theia/processTransaction" method="POST" name="paytm">
     {% for key, value in param_dict.items %}

@@ -24,7 +24,8 @@ class CustomerAddress(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.id} - {self.user }  -  {self.city}  -  {self.pincode} '
+        return f'{self.id} - {self.order_number }  -  {self.user}  -  {self.email} - {self.address1} - {self.address2} - \
+            {self.landmark} - {self.city} - {self.state} - {self.pincode} - {self.mobile_number} - {self.date_added} '
 
 
 class All_Brands(models.Model):
@@ -33,7 +34,7 @@ class All_Brands(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.brand_name}'
+        return f'{self.brand_name} -{self.brand_photo}'
 
 
 class All_Mobiles(models.Model):
@@ -45,7 +46,7 @@ class All_Mobiles(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.all_brands}  -  {self.mobile_name}'
+        return f'{self.all_brands}  -  {self.mobile_name} - {self.mobile_photo}'
 
 
 CATEGORY_CHOICES = (
@@ -104,7 +105,8 @@ class All_Accesories(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.all_mobiles} - {self.title} - {self.color}'
+        return f'{self.all_mobiles} - {self.title} - {self.price} -{self.description} - {self.category} - {self.sub_category} - {self.color} -\
+            {self.availability}- {self.accesories_photo}'
 
 
 class Cart(models.Model):
@@ -115,7 +117,7 @@ class Cart(models.Model):
     date_added = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.id} - {self.user} - {self.all_accesories} - {self.quantity} '
+        return f'{self.id} - {self.user} - {self.all_accesories} - {self.quantity} - {self.date_added} '
 
     @property
     def total_cost(self):
@@ -150,8 +152,8 @@ class OrderPlaced(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'{self.id} - {self.user} - {self.customer_address} - {self.all_accesories} - \
-        {self.quantity} - {self.ordered_date} - {self.status}'
+        return f'{self.id} -{self.payment_status} - {self.user} - {self.customer_address} - {self.all_accesories} - \
+        {self.quantity} - {self.item_total_price} - {self.expected_delivery_date} - {self.message} - {self.status} - {self.ordered_date}'
 
 
 RETURN_STATUS = (('Processing', 'Processing'), ('Accepted', 'Accepted'),
@@ -169,7 +171,7 @@ class Return_Order(models.Model):
     return_request_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f'{self.order_placed} - {self.return_request_message} - {self.return_status} - {self.return_request_date}'
+        return f'{self.order_placed} - {self.product_return_number} - {self.return_request_message} - {self.return_status} - {self.return_request_date}'
 
 
 class Payment(models.Model):
@@ -181,3 +183,25 @@ class Payment(models.Model):
 
     def __str__(self):
         return f'{self.payment_id} - {self.order_number} - {self.user} - {self.email} - {self.total_price}'
+
+
+class Paytm_Post_Data(models.Model):
+    order_number = models.CharField(max_length=20, blank=True)
+    marchent_id = models.CharField(max_length=50, blank=True)
+    transaction_id = models.CharField(max_length=50, blank=True)
+    transaction_amount = models.CharField(max_length=20, blank=True)
+    payment_mode = models.CharField(max_length=20, blank=True)
+    currency = models.CharField(max_length=20, blank=True)
+    transaction_date = models.CharField(max_length=20, blank=True)
+    transaction_status = models.CharField(max_length=20, blank=True)
+    response_code = models.CharField(max_length=20, blank=True)
+    response_message = models.CharField(max_length=20, blank=True)
+    gateway_name = models.CharField(max_length=20, blank=True)
+    bank_transaction_id = models.CharField(max_length=30, blank=True)
+    bank_name = models.CharField(max_length=20, blank=True)
+    checksum_hash = models.CharField(max_length=50, blank=True)
+
+    def __str__(self):
+        return f'{self.id} - {self.order_number} - {self.marchent_id} - {self.transaction_id} - {self.transaction_amount} - \
+        {self.payment_mode} - {self.currency} - {self.transaction_date} - {self.transaction_status} - {self.response_code} - {self.response_message} \
+        {self.gateway_name} - {self.bank_transaction_id} - {self.bank_name} - {self.checksum_hash}      '

@@ -2,8 +2,8 @@ from ast import Return
 from pickle import TRUE
 from unicodedata import category
 from django.shortcuts import redirect, render
-from mobiles.models import All_Accesories, All_Brands, All_Mobiles, Cart, CustomUser, CustomerAddress, OrderPlaced, Payment, Return_Order
-from django.contrib.auth import authenticate, login
+from mobiles.models import All_Accesories, All_Brands, All_Mobiles, Cart, CustomUser, CustomerAddress, OrderPlaced, Payment, Paytm_Post_Data, Return_Order
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 from .forms import CodeForm, CustomerRegistrationForm, LoginForm, Change_Mobile_Number_Form
 from otp.models import Code
@@ -286,6 +286,7 @@ def product_detail(request, id):
         })
 
 
+@login_required
 def add_to_cart(request):
     user = request.user
     product = request.GET.get('prod_id')
@@ -298,6 +299,7 @@ def add_to_cart(request):
     return redirect('/cart')
 
 
+@login_required
 def show_cart(request):
     total_item = 0
     if request.user.is_authenticated:
@@ -333,6 +335,7 @@ def show_cart(request):
             return render(request, 'mobiles/empty-cart.html')
 
 
+@login_required
 def plus_cart(request):
     if request.method == 'GET':
         prodd_id = request.GET['prodd_id']
@@ -383,6 +386,7 @@ def minus_cart(request):
         return JsonResponse(data)
 
 
+@login_required
 def remove_cart(request):
     if request.method == 'GET':
         prodc_id = request.GET['prodc_id']
@@ -405,10 +409,12 @@ def remove_cart(request):
         return JsonResponse(data)
 
 
+@login_required
 def buy_now(request):
     return render(request, 'mobiles/buynow.html')
 
 
+@login_required
 def profileView(request):
     order_id = genret_order_id()
     if request.method == 'POST':
@@ -488,19 +494,23 @@ def profileView(request):
                       {'param_dict': param_dict})
 
 
+@login_required
 def address(request):
     return render(request, 'mobiles/address.html')
 
 
+@login_required
 def orders(request):
     my_orders = OrderPlaced.objects.filter(user=request.user)
     return render(request, 'mobiles/orders.html', {'my_orders': my_orders})
 
 
+@login_required
 def mobile(request):
     return render(request, 'mobiles/mobile.html')
 
 
+@login_required
 def checkout(request):
     total_item = 0
     if request.user.is_authenticated:
@@ -527,12 +537,38 @@ def checkout(request):
 def handlerequest(request):
     # paytm will send you post request here
     form = request.POST
+    print(form)
     order_id = request.POST.get('ORDERID')
+    mid = request.POST.get('MID')
     txn_id = request.POST.get('TXNID')
+    txn_amount = request.POST.get('TXNAMOUNT')
+    payment_mode = request.POST.get('PAYMENTMODE')
+    currency = request.POST.get('CURRENCY')
     txn_date = request.POST.get('TXNDATE')
     txn_status = request.POST.get('STATUS')
-    bank_txn_id = request.POST.get('BANKTXNID')
+    resp_code = request.POST.get('RESPCODE')
     resp_msg = request.POST.get('RESPMSG')
+    gateway_name = request.POST.get('GATEWAYNAME')
+    bank_txn_id = request.POST.get('BANKTXNID')
+    bank_name = request.POST.get('BANKNAME')
+    checksum_hash = request.POST.get('CHECKSUMHASH')
+
+    paytm_data = Paytm_Post_Data.objects.create(
+        order_number=order_id,
+        marchent_id=mid,
+        transaction_id=txn_id,
+        transaction_amount=txn_amount,
+        payment_mode=payment_mode,
+        currency=currency,
+        transaction_date=txn_date,
+        transaction_status=txn_status,
+        response_code=resp_code,
+        response_message=resp_msg,
+        gateway_name=gateway_name,
+        bank_transaction_id=bank_txn_id,
+        bank_name=bank_name,
+        checksum_hash=checksum_hash)
+
     response_dict = {}
     for i in form.keys():
         response_dict[i] = form[i]
@@ -597,6 +633,7 @@ def search(request):
     })
 
 
+@login_required
 def return_order(request, id):
     order = OrderPlaced.objects.get(id=id)
     return_requested = Return_Order.objects.filter(order_placed=order)
@@ -625,9 +662,16 @@ def return_order(request, id):
                   {'user_returns': user_returns})
 
 
+@login_required
 def cancel_return_request(request, id):
     cancel_order = Return_Order.objects.filter(id=id).delete()
     messages.success(request, 'Return Request Has Been Cancelled!!')
     user_returns = Return_Order.objects.filter(order_placed__user=request.user)
     return render(request, 'mobiles/return_order.html',
                   {'user_returns': user_returns})
+
+
+@login_required
+def log_out(request):
+    logout(request)
+    return redirect('/')

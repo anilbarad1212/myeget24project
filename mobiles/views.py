@@ -483,7 +483,7 @@ def profileView(request):
             'INDUSTRY_TYPE_ID': 'Retail',
             'WEBSITE': 'WEBSTAGING',
             'CHANNEL_ID': 'WEB',
-            'CALLBACK_URL': 'http://127.0.0.1:8000/handlerequest/',
+            'CALLBACK_URL': 'http://eget24.herokuapp.com/handlerequest/',
         }
         # http://127.0.0.1:8000/
         # eget24.herokuapp.com

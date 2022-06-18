@@ -69,6 +69,7 @@ urlpatterns = [
     path('cancel-return-request/<int:id>',
          views.cancel_return_request,
          name='cancel-return-request'),
+    path('my-return-orders/', views.my_return_orders, name='my-return-orders'),
     re_path(r'^media/(?P<path>.*)$', serve,
             {'document_root': settings.MEDIA_ROOT}),
 ]

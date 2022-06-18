@@ -662,6 +662,12 @@ def return_order(request, id):
                   {'user_returns': user_returns})
 
 
+def my_return_orders(request):
+    user_returns = Return_Order.objects.filter(order_placed__user=request.user)
+    return render(request, 'mobiles/return_order.html',
+                  {'user_returns': user_returns})
+
+
 @login_required
 def cancel_return_request(request, id):
     cancel_order = Return_Order.objects.filter(id=id).delete()
